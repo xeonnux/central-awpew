@@ -58,10 +58,18 @@
                                {:dir (str (fs/cwd))
                                 :continue true})] ; Keep process running
      (reset! server-process proc)
-     (spit pid-file (:pid proc)) ; Save PID to file
-     (Thread/sleep 3000) ; Give it time to start
+     (Thread/sleep 2000) ; Give it time to start
+     ;; Try to get PID from the process
+     (let [pid (or (:pid proc) 
+                   (try 
+                     (-> (process/shell {:out :string} "sh" "-c" "ps aux | grep 'central.server.core' | grep -v grep | head -1 | awk '{print $2}'")
+                         :out
+                         clojure.string/trim)
+                     (catch Exception _ nil)))]
+       (when (and pid (not (empty? pid)))
+         (spit pid-file pid) ; Save PID to file
+         (println (str "   Process ID: " pid))))
      (println (str "✅ API server should be running at http://localhost:" port))
-     (println (str "   Process ID: " (:pid proc)))
      (println "📡 Endpoints:")
      (println (str "   GET http://localhost:" port "/ping  - Health check"))
      (println (str "   GET http://localhost:" port "/data  - Sample data"))
@@ -78,8 +86,8 @@
           (fs/delete-if-exists pid-file))
         (let [pid (Integer/parseInt (clojure.string/trim pid-content))]
           (try
-            (let [result (process/shell "ps" "-p" (str pid))]
-              (if (= (:exit result) 0)
+            (let [result (process/shell {:out :string} "sh" "-c" (str "ps -p " pid " | grep -v PID"))]
+              (if (and (= (:exit result) 0) (not (empty? (clojure.string/trim (:out result)))))
                 (do
                   (println "✅ API server is running")
                   (println (str "   Process ID: " pid)))
