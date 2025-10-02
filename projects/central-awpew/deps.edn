@@ -1,4 +1,11 @@
-{:deps {org.clojure/clojure {:mvn/version "1.11.1"}}
+{:deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        central/api {:local/root "../../components/api"}
+        central/db  {:local/root "../../components/db"}
+        central/core {:local/root "../../components/core"}
+        central/server {:local/root "../../bases/server"}}
 
  :aliases {:test {:extra-paths []
-                  :extra-deps  {}}}}
+                  :extra-deps  {}}
+           :main {:main-opts ["-m" "central.server.core"]}}}
+
+

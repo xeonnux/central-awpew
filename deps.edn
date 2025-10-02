@@ -1,6 +1,10 @@
 {:aliases  {:dev {:extra-paths ["development/src"]
 
-                  :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
+                  :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                               central/api {:local/root "components/api"}
+                               central/db {:local/root "components/db"}
+                               central/core {:local/root "components/core"}
+                               central/server {:local/root "bases/server"}}}
 
             :test {:extra-paths []}
 

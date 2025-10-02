@@ -1,4 +1,8 @@
 {:paths ["src" "resources"]
- :deps {}
+ :deps {ring/ring-core {:mvn/version "1.11.0"}
+        ring/ring-jetty-adapter {:mvn/version "1.11.0"}
+        compojure/compojure {:mvn/version "1.7.0"}
+        ring/ring-json {:mvn/version "0.5.1"}
+        ring-cors/ring-cors {:mvn/version "0.1.13"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}}}
